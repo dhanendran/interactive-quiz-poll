@@ -200,8 +200,8 @@ const { state } = store( NS, {
 				loading: false,
 				error: false,
 				selected: null,
-				counts: {},
-				totalVotes: 0,
+				counts: ctx.counts ? { ...ctx.counts } : {},
+				totalVotes: ctx.totalVotes || 0,
 				detailsHtml: '',
 			};
 			// Returning visitors: reflect their earlier choice (UX only).

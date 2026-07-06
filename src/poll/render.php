@@ -34,10 +34,17 @@ if ( empty( $d9qp_question_id ) || empty( $d9qp_answer_ids ) ) {
 	return '';
 }
 
+// Seed the current tally so returning visitors (and post-vote reloads) show
+// real numbers instead of an empty breakdown. Results stay hidden until the
+// visitor votes.
+$d9qp_breakdown = \D9QP\Counters::breakdown( $d9qp_post_id, $d9qp_question_id, $d9qp_answer_ids );
+
 $d9qp_context = array(
 	'mode'       => 'poll',
 	'postId'     => $d9qp_post_id,
 	'questionId' => $d9qp_question_id,
+	'counts'     => (object) $d9qp_breakdown['counts'],
+	'totalVotes' => $d9qp_breakdown['total'],
 );
 
 $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-poll' ) );

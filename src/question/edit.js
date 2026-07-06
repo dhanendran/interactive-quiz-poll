@@ -37,7 +37,7 @@ export default function Edit( { attributes, setAttributes, clientId } ) {
 				placeholder={ __( 'Ask a question…', 'interactive-quiz-poll' ) }
 				allowedFormats={ [ 'core/bold', 'core/italic' ] }
 			/>
-			<InnerBlocks allowedBlocks={ ALLOWED } template={ TEMPLATE } />
+			<InnerBlocks allowedBlocks={ ALLOWED } template={ TEMPLATE } templateLock={ false } />
 		</div>
 	);
 }
