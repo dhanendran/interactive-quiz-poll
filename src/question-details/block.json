@@ -3,12 +3,19 @@
 	"apiVersion": 3,
 	"name": "interactive-quiz-poll/question-details",
 	"version": "1.0.0",
-	"title": "Answer Details",
+	"title": "Answer Explanation",
 	"category": "widgets",
 	"icon": "info-outline",
-	"description": "Feedback or an explanation revealed after the visitor responds.",
+	"description": "An explanation revealed after the visitor responds. Can be scoped to correct or incorrect answers.",
 	"textdomain": "interactive-quiz-poll",
 	"parent": [ "interactive-quiz-poll/question" ],
+	"usesContext": [ "interactive-quiz-poll/mode" ],
+	"attributes": {
+		"showWhen": {
+			"type": "string",
+			"default": "any"
+		}
+	},
 	"supports": {
 		"html": false,
 		"reusable": false

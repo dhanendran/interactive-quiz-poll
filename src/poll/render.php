@@ -88,6 +88,6 @@ $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-poll'
 		</ul>
 	</fieldset>
 	<p class="d9qp-total" data-wp-bind--hidden="!state.pollVoted" data-wp-text="state.pollTotalVotesLabel"></p>
-	<div class="d9qp-details" data-wp-bind--hidden="!state.pollVoted" data-wp-watch="callbacks.renderPollDetails"></div>
+	<div class="d9qp-details" data-wp-bind--hidden="!state.pollHasDetails" data-wp-watch="callbacks.renderPollDetails"></div>
 	<p class="d9qp-error" role="alert" data-wp-bind--hidden="!state.pollError" data-wp-text="state.pollErrorText"></p>
 </div>

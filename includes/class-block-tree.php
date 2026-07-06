@@ -176,25 +176,39 @@ class Block_Tree {
 	}
 
 	/**
-	 * Render the trusted question-details block for a question to HTML.
+	 * Render the trusted answer-explanation block(s) for a question to HTML.
 	 *
-	 * Returns editorial feedback authored in the block editor — safe to inject
-	 * client-side because it never contains client input.
+	 * Returns editorial content authored in the block editor — safe to inject
+	 * client-side because it never contains client input. Each explanation may
+	 * be scoped with a `showWhen` of `any`, `correct` or `incorrect`, so a quiz
+	 * can show different text for a right vs. wrong answer.
 	 *
-	 * @param array $question Question block array.
-	 * @return string Rendered HTML, or empty string if there is no details block.
+	 * @param array     $question   Question block array.
+	 * @param bool|null $is_correct Whether the chosen answer was correct. Null
+	 *                              (polls) matches only `any`-scoped blocks.
+	 * @return string Rendered HTML, or empty string if nothing matches.
 	 */
-	public function render_details( array $question ) {
-		$inner   = isset( $question['innerBlocks'] ) ? $question['innerBlocks'] : array();
-		$details = $this->find(
-			$inner,
-			static function ( $block ) {
-				return isset( $block['blockName'] ) && self::B_DETAILS === $block['blockName'];
+	public function render_details( array $question, $is_correct = null ) {
+		$inner = isset( $question['innerBlocks'] ) ? $question['innerBlocks'] : array();
+		$html  = '';
+
+		$walk = function ( $blocks ) use ( &$walk, &$html, $is_correct ) {
+			foreach ( $blocks as $block ) {
+				if ( isset( $block['blockName'] ) && self::B_DETAILS === $block['blockName'] ) {
+					$when  = isset( $block['attrs']['showWhen'] ) ? $block['attrs']['showWhen'] : 'any';
+					$match = 'any' === $when
+						|| ( true === $is_correct && 'correct' === $when )
+						|| ( false === $is_correct && 'incorrect' === $when );
+					if ( $match ) {
+						$html .= render_block( $block );
+					}
+				} elseif ( ! empty( $block['innerBlocks'] ) ) {
+					$walk( $block['innerBlocks'] );
+				}
 			}
-		);
-		if ( null === $details ) {
-			return '';
-		}
-		return render_block( $details );
+		};
+		$walk( $inner );
+
+		return $html;
 	}
 }

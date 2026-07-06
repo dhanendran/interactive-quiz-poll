@@ -84,8 +84,7 @@ $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-quiz'
 					<?php endforeach; ?>
 				</ul>
 			</fieldset>
-			<p class="d9qp-feedback" role="status" data-wp-bind--hidden="!state.quizAnswered" data-wp-text="state.questionFeedback"></p>
-			<div class="d9qp-details" data-wp-bind--hidden="!state.quizAnswered" data-wp-watch="callbacks.renderQuizDetails"></div>
+			<div class="d9qp-details" role="status" data-wp-bind--hidden="!state.quizHasDetails" data-wp-watch="callbacks.renderQuizDetails"></div>
 		</div>
 	<?php endforeach; ?>
 

@@ -230,7 +230,7 @@ class Rest_Controller {
 				'success'             => true,
 				'isCorrect'           => $is_correct,
 				'correctAnswerId'     => $correct_answer_id,
-				'questionDetailsHtml' => $resolved['tree']->render_details( $resolved['question'] ),
+				'questionDetailsHtml' => $resolved['tree']->render_details( $resolved['question'], $is_correct ),
 				'token'               => Rate_Limiter::issue_attempt_token( $post_id ),
 			)
 		);

@@ -87,13 +87,13 @@ const { state } = store( NS, {
 			const q = state.questions[ ctx.questionId ];
 			return !! ( q && q.answered && q.chosenId === ctx.answerId && q.correctAnswerId !== ctx.answerId );
 		},
-		get questionFeedback() {
+		get quizHasDetails() {
 			const q = state.questions[ getContext().questionId ];
-			if ( ! q || ! q.answered ) {
-				return '';
-			}
-			const i18n = getConfig( NS ).i18n;
-			return q.isCorrect ? i18n.correct : i18n.incorrect;
+			return !! ( q && q.answered && q.detailsHtml );
+		},
+		get pollHasDetails() {
+			const p = state.polls[ getContext().postId ];
+			return !! ( p && p.voted && p.detailsHtml );
 		},
 		get quizCompleted() {
 			const q = state.quizzes[ getContext().postId ];
