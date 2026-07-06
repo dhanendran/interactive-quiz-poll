@@ -23,13 +23,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Rate_Limiter {
 
 	/**
-	 * A privacy-preserving, non-reversible fingerprint of the current caller.
+	 * A privacy-preserving, non-reversible fingerprint of the caller's IP.
+	 *
+	 * Used for rate limiting only — the raw IP is never stored.
 	 *
 	 * @return string
 	 */
 	private static function fingerprint() {
 		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 		return wp_hash( 'd9qp|' . $ip );
+	}
+
+	/**
+	 * A stable per-browser visitor id, stored in a first-party cookie.
+	 *
+	 * This is the "one response per person" boundary — a browser, not an IP —
+	 * so distinct visitors sharing an IP (offices, households, localhost) each
+	 * get their own vote. It is not personally identifying (random token).
+	 *
+	 * @return string
+	 */
+	private static function visitor_id() {
+		if ( ! empty( $_COOKIE['d9qp_uid'] ) ) {
+			return sanitize_text_field( wp_unslash( $_COOKIE['d9qp_uid'] ) );
+		}
+
+		$id = wp_generate_password( 20, false );
+
+		if ( ! headers_sent() ) {
+			$path = defined( 'COOKIEPATH' ) && COOKIEPATH ? COOKIEPATH : '/';
+			$domain = defined( 'COOKIE_DOMAIN' ) ? COOKIE_DOMAIN : '';
+			setcookie( 'd9qp_uid', $id, time() + YEAR_IN_SECONDS, $path, $domain, is_ssl(), true );
+		}
+
+		// Make it available for the remainder of this request.
+		$_COOKIE['d9qp_uid'] = $id;
+		return $id;
 	}
 
 	/**
@@ -100,7 +129,7 @@ class Rate_Limiter {
 	 * @return string
 	 */
 	private static function dedup_key( $post_id, $question_id ) {
-		return 'd9qp_dp_' . self::fingerprint() . '_' . (int) $post_id . '_' . md5( $question_id );
+		return 'd9qp_dp_' . self::visitor_id() . '_' . (int) $post_id . '_' . md5( $question_id );
 	}
 
 	/**
