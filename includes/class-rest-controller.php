@@ -251,6 +251,7 @@ class Rest_Controller {
 		}
 
 		$post_id     = $resolved['post_id'];
+		$context_id  = $resolved['context_id'];
 		$question_id = $resolved['question']['attrs']['questionId'];
 		$answer_id   = $resolved['answer']['attrs']['answerId'];
 		$is_correct  = ! empty( $resolved['answer']['attrs']['isCorrect'] );
@@ -265,7 +266,9 @@ class Rest_Controller {
 			}
 		}
 
-		Counters::increment( $post_id, Counters::answer_key( $question_id, $answer_id ) );
+		// Record the per-post answer distribution (useful for stats), scoped to
+		// the display post like poll votes.
+		Counters::increment( $post_id, Counters::answer_key( $context_id, $question_id, $answer_id ) );
 		Counters::touch_last_response( $post_id );
 
 		return rest_ensure_response(

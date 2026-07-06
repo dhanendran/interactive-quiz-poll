@@ -209,6 +209,13 @@ class Block_Tree {
 		};
 		$walk( $inner );
 
+		// Treat whitespace-only explanations (e.g. an empty paragraph left at
+		// its placeholder) as "no explanation", so the client shows no box.
+		$has_media = (bool) preg_match( '/<(img|iframe|video|audio|figure|svg)\b/i', $html );
+		if ( ! $has_media && '' === trim( wp_strip_all_tags( $html ) ) ) {
+			return '';
+		}
+
 		return $html;
 	}
 }
