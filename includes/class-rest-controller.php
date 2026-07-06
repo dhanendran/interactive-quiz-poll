@@ -32,15 +32,25 @@ class Rest_Controller {
 			),
 		);
 
-		$body_args = array(
-			'questionId' => array(
+		$context_arg = array(
+			'contextId' => array(
 				'required'          => true,
-				'sanitize_callback' => 'sanitize_text_field',
+				'sanitize_callback' => 'absint',
 			),
-			'answerId'   => array(
-				'required'          => true,
-				'sanitize_callback' => 'sanitize_text_field',
-			),
+		);
+
+		$body_args = array_merge(
+			$context_arg,
+			array(
+				'questionId' => array(
+					'required'          => true,
+					'sanitize_callback' => 'sanitize_text_field',
+				),
+				'answerId'   => array(
+					'required'          => true,
+					'sanitize_callback' => 'sanitize_text_field',
+				),
+			)
 		);
 
 		register_rest_route(
@@ -74,6 +84,7 @@ class Rest_Controller {
 				'permission_callback' => array( $this, 'permission' ),
 				'args'                => array_merge(
 					$id_args,
+					$context_arg,
 					array(
 						'token' => array(
 							'required'          => true,
@@ -123,6 +134,11 @@ class Rest_Controller {
 			return new \WP_Error( 'd9qp_wrong_type', __( 'That content is not the expected type.', 'interactive-quiz-poll' ), array( 'status' => 400 ) );
 		}
 
+		$context_id = $this->resolve_context_id( $request, $post_id );
+		if ( is_wp_error( $context_id ) ) {
+			return $context_id;
+		}
+
 		$tree     = new Block_Tree( $post_id );
 		$question = $tree->get_question( sanitize_text_field( $request['questionId'] ) );
 		if ( null === $question ) {
@@ -135,11 +151,36 @@ class Rest_Controller {
 		}
 
 		return array(
-			'tree'     => $tree,
-			'question' => $question,
-			'answer'   => $answer,
-			'post_id'  => $post_id,
+			'tree'       => $tree,
+			'question'   => $question,
+			'answer'     => $answer,
+			'post_id'    => $post_id,
+			'context_id' => $context_id,
 		);
+	}
+
+	/**
+	 * Resolve and validate the display-context post (where responses are
+	 * tracked). Falls back to the quiz/poll itself for direct placement.
+	 *
+	 * @param \WP_REST_Request $request Request.
+	 * @param int              $ref_id  Quiz/poll CPT ID.
+	 * @return int|\WP_Error
+	 */
+	private function resolve_context_id( $request, $ref_id ) {
+		$context_id = isset( $request['contextId'] ) ? absint( $request['contextId'] ) : 0;
+
+		if ( ! $context_id || $context_id === $ref_id ) {
+			return $ref_id;
+		}
+
+		// The embedding post must be a real, published post so responses can't
+		// be sprayed onto arbitrary or non-existent IDs.
+		if ( 'publish' !== get_post_status( $context_id ) ) {
+			return new \WP_Error( 'd9qp_bad_context', __( 'Invalid post context.', 'interactive-quiz-poll' ), array( 'status' => 400 ) );
+		}
+
+		return $context_id;
 	}
 
 	/**
@@ -155,13 +196,14 @@ class Rest_Controller {
 		}
 
 		$post_id     = $resolved['post_id'];
+		$context_id  = $resolved['context_id'];
 		$question_id = $resolved['question']['attrs']['questionId'];
 		$answer_id   = $resolved['answer']['attrs']['answerId'];
 		$answer_ids  = $resolved['tree']->get_answer_ids( $resolved['question'] );
 
-		// One response per caller per question (best-effort, privacy friendly).
-		if ( Rate_Limiter::already_responded( $post_id, $question_id ) ) {
-			$breakdown = Counters::breakdown( $post_id, $question_id, $answer_ids );
+		// One response per caller per question per post (best-effort, privacy friendly).
+		if ( Rate_Limiter::already_responded( $context_id, $question_id ) ) {
+			$breakdown = Counters::breakdown( $post_id, $context_id, $question_id, $answer_ids );
 			return rest_ensure_response(
 				array(
 					'success'             => false,
@@ -174,12 +216,13 @@ class Rest_Controller {
 			);
 		}
 
-		Counters::increment( $post_id, Counters::answer_key( $question_id, $answer_id ) );
+		// Per-post tally, plus an overall total on the quiz/poll for the admin.
+		Counters::increment( $post_id, Counters::answer_key( $context_id, $question_id, $answer_id ) );
 		Counters::increment( $post_id, Counters::KEY_TOTAL );
 		Counters::touch_last_response( $post_id );
-		Rate_Limiter::mark_responded( $post_id, $question_id );
+		Rate_Limiter::mark_responded( $context_id, $question_id );
 
-		$breakdown = Counters::breakdown( $post_id, $question_id, $answer_ids );
+		$breakdown = Counters::breakdown( $post_id, $context_id, $question_id, $answer_ids );
 
 		return rest_ensure_response(
 			array(

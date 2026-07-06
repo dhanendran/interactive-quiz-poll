@@ -13,14 +13,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-$d9qp_post_id = \D9QP\Blocks::current_post_id();
-if ( ! $d9qp_post_id ) {
+$d9qp_ref_id     = \D9QP\Blocks::ref_post_id();
+$d9qp_context_id = \D9QP\Blocks::context_post_id();
+if ( ! $d9qp_ref_id ) {
 	return '';
 }
 
 \D9QP\Blocks::ensure_config();
 
-$d9qp_tree     = new \D9QP\Block_Tree( $d9qp_post_id );
+$d9qp_tree     = new \D9QP\Block_Tree( $d9qp_ref_id );
 $d9qp_question = $d9qp_tree->first_question();
 if ( null === $d9qp_question ) {
 	return '';
@@ -37,11 +38,12 @@ if ( empty( $d9qp_question_id ) || empty( $d9qp_answer_ids ) ) {
 // Seed the current tally so returning visitors (and post-vote reloads) show
 // real numbers instead of an empty breakdown. Results stay hidden until the
 // visitor votes.
-$d9qp_breakdown = \D9QP\Counters::breakdown( $d9qp_post_id, $d9qp_question_id, $d9qp_answer_ids );
+$d9qp_breakdown = \D9QP\Counters::breakdown( $d9qp_ref_id, $d9qp_context_id, $d9qp_question_id, $d9qp_answer_ids );
 
 $d9qp_context = array(
 	'mode'       => 'poll',
-	'postId'     => $d9qp_post_id,
+	'refId'      => $d9qp_ref_id,
+	'contextId'  => $d9qp_context_id,
 	'questionId' => $d9qp_question_id,
 	'counts'     => (object) $d9qp_breakdown['counts'],
 	'totalVotes' => $d9qp_breakdown['total'],

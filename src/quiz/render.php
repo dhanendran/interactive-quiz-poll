@@ -13,23 +13,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-$d9qp_post_id = \D9QP\Blocks::current_post_id();
-if ( ! $d9qp_post_id ) {
+$d9qp_ref_id     = \D9QP\Blocks::ref_post_id();
+$d9qp_context_id = \D9QP\Blocks::context_post_id();
+if ( ! $d9qp_ref_id ) {
 	return '';
 }
 
 \D9QP\Blocks::ensure_config();
 
-$d9qp_tree      = new \D9QP\Block_Tree( $d9qp_post_id );
+$d9qp_tree      = new \D9QP\Block_Tree( $d9qp_ref_id );
 $d9qp_questions = $d9qp_tree->get_questions();
 if ( empty( $d9qp_questions ) ) {
 	return '';
 }
 
 $d9qp_context = array(
-	'mode'   => 'quiz',
-	'postId' => $d9qp_post_id,
-	'total'  => count( $d9qp_questions ),
+	'mode'      => 'quiz',
+	'refId'     => $d9qp_ref_id,
+	'contextId' => $d9qp_context_id,
+	'total'     => count( $d9qp_questions ),
 );
 
 $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-quiz' ) );

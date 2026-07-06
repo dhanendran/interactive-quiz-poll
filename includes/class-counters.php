@@ -20,16 +20,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Counters {
 
 	/**
-	 * Per-answer vote counter key.
+	 * Per-answer vote counter key, scoped to the post the poll is shown on.
 	 *
+	 * All counters live on the quiz/poll CPT, but the key includes the display
+	 * post ID so the same poll embedded on two posts keeps two tallies. UUIDs
+	 * contain no underscores, and we always look these up by known IDs (never
+	 * by parsing the key), so the underscore delimiter is unambiguous.
+	 *
+	 * @param int    $context_id  Display post ID.
 	 * @param string $question_id Question UUID.
 	 * @param string $answer_id   Answer UUID.
 	 * @return string
 	 */
-	public static function answer_key( $question_id, $answer_id ) {
-		// UUIDs contain no underscores, so the underscore-delimited key is
-		// unambiguous. We always look these up by known IDs, never by parsing.
-		return '_d9qp_v_' . $question_id . '_' . $answer_id;
+	public static function answer_key( $context_id, $question_id, $answer_id ) {
+		return '_d9qp_v_' . (int) $context_id . '_' . $question_id . '_' . $answer_id;
 	}
 
 	const KEY_COMPLETIONS = '_d9qp_completions';
@@ -95,20 +99,21 @@ class Counters {
 	}
 
 	/**
-	 * Build the vote breakdown for a question.
+	 * Build the vote breakdown for a question on a given display post.
 	 *
-	 * @param int      $post_id     Post ID.
+	 * @param int      $ref_id      Quiz/poll CPT ID (where counters are stored).
+	 * @param int      $context_id  Display post ID (the tally scope).
 	 * @param string   $question_id Question UUID.
 	 * @param string[] $answer_ids  Known answer IDs (from the block tree).
 	 * @return array { counts: {answerId:int}, total: int }
 	 */
-	public static function breakdown( $post_id, $question_id, array $answer_ids ) {
+	public static function breakdown( $ref_id, $context_id, $question_id, array $answer_ids ) {
 		$counts = array();
 		$total  = 0;
 		foreach ( $answer_ids as $answer_id ) {
-			$n                     = self::get( $post_id, self::answer_key( $question_id, $answer_id ) );
+			$n                    = self::get( $ref_id, self::answer_key( $context_id, $question_id, $answer_id ) );
 			$counts[ $answer_id ] = $n;
-			$total                += $n;
+			$total               += $n;
 		}
 		return array(
 			'counts' => $counts,

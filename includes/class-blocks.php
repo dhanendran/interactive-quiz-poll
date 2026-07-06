@@ -17,15 +17,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Blocks {
 
 	/**
-	 * The container post ID currently being rendered.
+	 * The referenced quiz/poll CPT ID currently being rendered.
 	 *
-	 * When a quiz/poll is surfaced through an embed block, this is the referenced
-	 * CPT ID (so votes are tallied against the single source of truth), not the
-	 * page the embed lives on.
+	 * When surfaced through an embed block, this is the referenced CPT ID —
+	 * used to validate question/answer IDs against the authored blocks.
 	 *
 	 * @var int|null
 	 */
 	private static $render_post_id = null;
+
+	/**
+	 * The display context: the post the quiz/poll is shown on.
+	 *
+	 * Responses are tracked per this ID, so the same quiz/poll embedded on two
+	 * different posts keeps two independent tallies.
+	 *
+	 * @var int|null
+	 */
+	private static $context_post_id = null;
 
 	/**
 	 * Whether the interactivity config has been emitted this request.
@@ -55,11 +64,11 @@ class Blocks {
 	}
 
 	/**
-	 * The container post ID to attribute the current render to.
+	 * The referenced quiz/poll CPT ID (for validating authored blocks).
 	 *
 	 * @return int
 	 */
-	public static function current_post_id() {
+	public static function ref_post_id() {
 		if ( null !== self::$render_post_id ) {
 			return (int) self::$render_post_id;
 		}
@@ -67,19 +76,34 @@ class Blocks {
 	}
 
 	/**
-	 * Set the container post ID for an embed render.
+	 * The display-context post ID (for tracking responses per post).
 	 *
-	 * @param int $post_id Referenced CPT ID.
+	 * @return int
 	 */
-	public static function set_render_post_id( $post_id ) {
-		self::$render_post_id = (int) $post_id;
+	public static function context_post_id() {
+		if ( null !== self::$context_post_id ) {
+			return (int) self::$context_post_id;
+		}
+		return (int) get_the_ID();
+	}
+
+	/**
+	 * Set the render context for an embed.
+	 *
+	 * @param int $ref_id     Referenced quiz/poll CPT ID.
+	 * @param int $context_id The post the embed appears on.
+	 */
+	public static function set_render_context( $ref_id, $context_id ) {
+		self::$render_post_id  = (int) $ref_id;
+		self::$context_post_id = (int) $context_id;
 	}
 
 	/**
 	 * Clear the embed render context.
 	 */
-	public static function reset_render_post_id() {
-		self::$render_post_id = null;
+	public static function reset_render_context() {
+		self::$render_post_id  = null;
+		self::$context_post_id = null;
 	}
 
 	/**

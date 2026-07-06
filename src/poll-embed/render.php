@@ -25,10 +25,11 @@ if ( \D9QP\Post_Types::POLL !== \D9QP\Post_Types::valid_container( $d9qp_ref ) )
 
 $d9qp_post = get_post( $d9qp_ref );
 
-// Attribute the render (and therefore votes) to the referenced poll.
-\D9QP\Blocks::set_render_post_id( $d9qp_ref );
+// Validate the question against the referenced poll, but track votes against
+// the post this embed appears on.
+\D9QP\Blocks::set_render_context( $d9qp_ref, (int) get_the_ID() );
 $d9qp_html = do_blocks( $d9qp_post->post_content );
-\D9QP\Blocks::reset_render_post_id();
+\D9QP\Blocks::reset_render_context();
 
 $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp-embed d9qp-poll-embed' ) );
 
