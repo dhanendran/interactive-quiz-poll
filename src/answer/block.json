@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "interactive-quiz-poll/answer",
+	"version": "1.0.0",
+	"title": "Answer",
+	"category": "widgets",
+	"icon": "yes",
+	"description": "One answer option.",
+	"textdomain": "interactive-quiz-poll",
+	"parent": [ "interactive-quiz-poll/question" ],
+	"attributes": {
+		"answerId": {
+			"type": "string",
+			"default": ""
+		},
+		"text": {
+			"type": "string",
+			"default": ""
+		},
+		"isCorrect": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"usesContext": [ "interactive-quiz-poll/mode" ],
+	"supports": {
+		"html": false,
+		"reusable": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}

@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "interactive-quiz-poll/poll-embed",
+	"version": "1.0.0",
+	"title": "Poll",
+	"category": "widgets",
+	"icon": "chart-bar",
+	"description": "Embed a saved poll anywhere on your site.",
+	"textdomain": "interactive-quiz-poll",
+	"keywords": [ "poll", "vote", "survey" ],
+	"attributes": {
+		"ref": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"render": "file:./render.php"
+}

@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "interactive-quiz-poll/quiz",
+	"version": "1.0.0",
+	"title": "Quiz",
+	"category": "widgets",
+	"icon": "forms",
+	"description": "A one-or-more question quiz with per-question feedback and a score.",
+	"textdomain": "interactive-quiz-poll",
+	"keywords": [ "quiz", "test", "question" ],
+	"attributes": {
+		"mode": {
+			"type": "string",
+			"default": "quiz"
+		}
+	},
+	"providesContext": {
+		"interactive-quiz-poll/mode": "mode"
+	},
+	"supports": {
+		"html": false,
+		"interactivity": true,
+		"inserter": false,
+		"reusable": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js",
+	"render": "file:./render.php"
+}

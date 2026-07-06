@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "interactive-quiz-poll/quiz-embed",
+	"version": "1.0.0",
+	"title": "Quiz",
+	"category": "widgets",
+	"icon": "forms",
+	"description": "Embed a saved quiz anywhere on your site.",
+	"textdomain": "interactive-quiz-poll",
+	"keywords": [ "quiz", "test", "question" ],
+	"attributes": {
+		"ref": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"render": "file:./render.php"
+}

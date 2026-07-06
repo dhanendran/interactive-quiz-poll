@@ -1,0 +1,18 @@
+{
+	"name": "interactive-quiz-poll",
+	"version": "1.0.0",
+	"description": "First-party quiz and poll Gutenberg blocks built on the WordPress Interactivity API.",
+	"author": "Dhanendran Rajagopal",
+	"license": "GPL-2.0-or-later",
+	"private": true,
+	"scripts": {
+		"build": "cross-env WP_EXPERIMENTAL_MODULES=true wp-scripts build",
+		"start": "cross-env WP_EXPERIMENTAL_MODULES=true wp-scripts start",
+		"lint:js": "wp-scripts lint-js",
+		"format": "wp-scripts format"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^30.0.0",
+		"cross-env": "^7.0.3"
+	}
+}

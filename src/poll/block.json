@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "interactive-quiz-poll/poll",
+	"version": "1.0.0",
+	"title": "Poll",
+	"category": "widgets",
+	"icon": "chart-bar",
+	"description": "A single-question poll with a live results breakdown.",
+	"textdomain": "interactive-quiz-poll",
+	"keywords": [ "poll", "vote", "survey" ],
+	"attributes": {
+		"mode": {
+			"type": "string",
+			"default": "poll"
+		}
+	},
+	"providesContext": {
+		"interactive-quiz-poll/mode": "mode"
+	},
+	"supports": {
+		"html": false,
+		"interactivity": true,
+		"inserter": false,
+		"reusable": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js",
+	"render": "file:./render.php"
+}

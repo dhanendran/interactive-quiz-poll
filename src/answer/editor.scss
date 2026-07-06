@@ -1,0 +1,22 @@
+.d9qp-answer-editor {
+	display: flex;
+	align-items: center;
+	gap: 0.75em;
+	padding: 0.4em 0.6em;
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+	margin-bottom: 0.35em;
+
+	&.is-correct {
+		border-color: #16a34a;
+		background: rgba( 22, 163, 74, 0.06 );
+	}
+
+	.d9qp-answer-input {
+		flex: 1;
+	}
+
+	.d9qp-correct-toggle {
+		margin: 0;
+	}
+}

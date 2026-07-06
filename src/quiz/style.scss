@@ -1,0 +1,88 @@
+.wp-block-interactive-quiz-poll-quiz {
+	--d9qp-correct: #16a34a;
+	--d9qp-wrong: #dc2626;
+
+	.d9qp-question {
+		margin-bottom: 1.5em;
+		padding-bottom: 1.5em;
+		border-bottom: 1px solid rgba( 0, 0, 0, 0.08 );
+
+		&:last-of-type {
+			border-bottom: 0;
+		}
+	}
+
+	.d9qp-fieldset {
+		border: 0;
+		margin: 0;
+		padding: 0;
+	}
+
+	.d9qp-prompt {
+		font-weight: 600;
+		font-size: 1.1em;
+		margin-bottom: 0.75em;
+		padding: 0;
+	}
+
+	.d9qp-options {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5em;
+	}
+
+	.d9qp-option-btn {
+		display: block;
+		width: 100%;
+		text-align: left;
+		padding: 0.7em 1em;
+		border: 1px solid currentColor;
+		border-radius: 8px;
+		background: transparent;
+		cursor: pointer;
+		font: inherit;
+		transition: background-color 0.15s ease, border-color 0.15s ease;
+
+		&:hover:not( [disabled] ) {
+			background: rgba( 0, 0, 0, 0.04 );
+		}
+
+		&[disabled] {
+			cursor: default;
+		}
+	}
+
+	.d9qp-option.is-correct .d9qp-option-btn {
+		border-color: var( --d9qp-correct );
+		background: rgba( 22, 163, 74, 0.12 );
+		font-weight: 600;
+	}
+
+	.d9qp-option.is-wrong .d9qp-option-btn {
+		border-color: var( --d9qp-wrong );
+		background: rgba( 220, 38, 38, 0.1 );
+	}
+
+	.d9qp-feedback {
+		margin-top: 0.6em;
+		font-weight: 600;
+	}
+
+	.d9qp-details {
+		margin-top: 0.4em;
+		opacity: 0.85;
+	}
+
+	.d9qp-quiz-result {
+		margin-top: 1em;
+		padding: 1em;
+		border-radius: 8px;
+		background: rgba( 0, 0, 0, 0.04 );
+		font-size: 1.15em;
+		font-weight: 700;
+		text-align: center;
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "interactive-quiz-poll/question",
+	"version": "1.0.0",
+	"title": "Question",
+	"category": "widgets",
+	"icon": "editor-help",
+	"description": "A question with its answer options.",
+	"textdomain": "interactive-quiz-poll",
+	"parent": [ "interactive-quiz-poll/quiz", "interactive-quiz-poll/poll" ],
+	"attributes": {
+		"questionId": {
+			"type": "string",
+			"default": ""
+		},
+		"prompt": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"usesContext": [ "interactive-quiz-poll/mode" ],
+	"supports": {
+		"html": false,
+		"reusable": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}
