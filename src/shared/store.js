@@ -10,8 +10,32 @@ import { store, getContext, getConfig, getElement } from '@wordpress/interactivi
 
 const NS = 'interactive-quiz-poll';
 
-// Per-context snapshot loaded from localStorage during init, read by children.
+// Per-context localStorage snapshot, memoised so it is available to whichever
+// init callback runs first (child `data-wp-init` effects run before parents').
 const savedCache = {};
+// Question IDs seen per context, tracked independently of the quiz record so it
+// survives init ordering.
+const contextQuestions = {};
+
+const loadSaved = ( contextId ) => {
+	if ( ! ( contextId in savedCache ) ) {
+		let parsed = null;
+		try {
+			parsed = JSON.parse( window.localStorage.getItem( `d9qp_quiz_${ contextId }` ) );
+		} catch ( e ) {}
+		savedCache[ contextId ] = parsed || null;
+	}
+	return savedCache[ contextId ];
+};
+
+const trackQuestion = ( contextId, questionId ) => {
+	if ( ! contextQuestions[ contextId ] ) {
+		contextQuestions[ contextId ] = [];
+	}
+	if ( contextQuestions[ contextId ].indexOf( questionId ) < 0 ) {
+		contextQuestions[ contextId ].push( questionId );
+	}
+};
 
 const request = async ( path, body ) => {
 	const { restUrl } = getConfig( NS );
@@ -37,7 +61,7 @@ const persistQuiz = ( contextId ) => {
 		token: quiz.token,
 		questions: {},
 	};
-	quiz.questionIds.forEach( ( qid ) => {
+	( contextQuestions[ contextId ] || [] ).forEach( ( qid ) => {
 		const q = state.questions[ qid ];
 		if ( q && q.answered ) {
 			data.questions[ qid ] = {
@@ -200,9 +224,7 @@ const { state } = store( NS, {
 					q.isCorrect = !! data.isCorrect;
 					q.detailsHtml = data.questionDetailsHtml || '';
 					if ( quiz ) {
-						if ( quiz.questionIds.indexOf( ctx.questionId ) < 0 ) {
-							quiz.questionIds.push( ctx.questionId );
-						}
+						trackQuestion( ctx.contextId, ctx.questionId );
 						quiz.answered += 1;
 						if ( q.isCorrect ) {
 							quiz.correct += 1;
@@ -265,35 +287,25 @@ const { state } = store( NS, {
 			if ( state.quizzes[ id ] ) {
 				return;
 			}
-			let saved = null;
-			try {
-				saved = JSON.parse( window.localStorage.getItem( `d9qp_quiz_${ id }` ) );
-			} catch ( e ) {}
-			savedCache[ id ] = saved;
+			const saved = loadSaved( id );
 			state.quizzes[ id ] = {
 				answered: saved ? saved.answered || 0 : 0,
 				correct: saved ? saved.correct || 0 : 0,
 				total: ctx.total || 0,
 				token: saved ? saved.token || '' : '',
 				completed: saved ? !! saved.completed : false,
-				questionIds: [],
 			};
 		},
 
 		initQuestion() {
 			const ctx = getContext();
 			const qid = ctx.questionId;
-			const quiz = state.quizzes[ ctx.contextId ];
-			if ( quiz && quiz.questionIds.indexOf( qid ) < 0 ) {
-				quiz.questionIds.push( qid );
-			}
+			trackQuestion( ctx.contextId, qid );
 			if ( state.questions[ qid ] ) {
 				return;
 			}
-			const savedQuestions =
-				savedCache[ ctx.contextId ] && savedCache[ ctx.contextId ].questions
-					? savedCache[ ctx.contextId ].questions
-					: {};
+			const savedData = loadSaved( ctx.contextId );
+			const savedQuestions = savedData && savedData.questions ? savedData.questions : {};
 			const saved = savedQuestions[ qid ];
 			state.questions[ qid ] = saved
 				? {
