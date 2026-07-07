@@ -39,6 +39,7 @@ class Counters {
 	const KEY_COMPLETIONS = '_d9qp_completions';
 	const KEY_TOTAL       = '_d9qp_total';
 	const KEY_LAST        = '_d9qp_last';
+	const KEY_REV         = '_d9qp_rev';
 
 	/**
 	 * Atomically increment an integer post-meta counter by one.

@@ -47,6 +47,7 @@ $d9qp_context = array(
 	'questionId' => $d9qp_question_id,
 	'counts'     => (object) $d9qp_breakdown['counts'],
 	'totalVotes' => $d9qp_breakdown['total'],
+	'rev'        => (int) get_post_meta( $d9qp_ref_id, \D9QP\Counters::KEY_REV, true ),
 );
 
 $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-poll' ) );

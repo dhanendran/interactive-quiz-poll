@@ -118,6 +118,11 @@ class Admin_Columns {
 		);
 		wp_cache_delete( $post_id, 'post_meta' );
 
+		// Bump the reset revision so visitors' locally-saved answers are
+		// discarded on their next page load. Set after the delete above so it
+		// isn't wiped by it.
+		update_post_meta( $post_id, Counters::KEY_REV, time() );
+
 		wp_safe_redirect( wp_get_referer() ? wp_get_referer() : admin_url( 'edit.php' ) );
 		exit;
 	}

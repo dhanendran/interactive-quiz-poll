@@ -17,12 +17,19 @@ const savedCache = {};
 // survives init ordering.
 const contextQuestions = {};
 
-const loadSaved = ( contextId ) => {
+const loadSaved = ( contextId, rev ) => {
 	if ( ! ( contextId in savedCache ) ) {
 		let parsed = null;
 		try {
 			parsed = JSON.parse( window.localStorage.getItem( `d9qp_quiz_${ contextId }` ) );
 		} catch ( e ) {}
+		// Discard answers saved before an admin reset (revision mismatch).
+		if ( parsed && parsed.rev !== rev ) {
+			parsed = null;
+			try {
+				window.localStorage.removeItem( `d9qp_quiz_${ contextId }` );
+			} catch ( e ) {}
+		}
 		savedCache[ contextId ] = parsed || null;
 	}
 	return savedCache[ contextId ];
@@ -54,6 +61,7 @@ const persistQuiz = ( contextId ) => {
 		return;
 	}
 	const data = {
+		rev: quiz.rev,
 		answered: quiz.answered,
 		correct: quiz.correct,
 		total: quiz.total,
@@ -234,7 +242,7 @@ const { state } = store( NS, {
 					try {
 						window.localStorage.setItem(
 							`d9qp_poll_${ ctx.contextId }`,
-							JSON.stringify( { a: p.selected, t: Date.now() } )
+							JSON.stringify( { a: p.selected, t: Date.now(), rev: ctx.rev } )
 						);
 					} catch ( e ) {}
 				} else {
@@ -338,12 +346,15 @@ const { state } = store( NS, {
 				totalVotes: ctx.totalVotes || 0,
 				detailsHtml: '',
 			};
-			// Returning visitors: reflect their earlier choice (UX only).
+			// Returning visitors: reflect their earlier choice (UX only), unless
+			// an admin reset has bumped the revision since they voted.
 			try {
 				const saved = window.localStorage.getItem( `d9qp_poll_${ ctx.contextId }` );
 				if ( saved ) {
 					const parsed = JSON.parse( saved );
-					if ( parsed && parsed.a ) {
+					if ( parsed && parsed.rev !== ctx.rev ) {
+						window.localStorage.removeItem( `d9qp_poll_${ ctx.contextId }` );
+					} else if ( parsed && parsed.a ) {
 						record.selected = parsed.a;
 						record.voted = true;
 					}
@@ -358,8 +369,9 @@ const { state } = store( NS, {
 			if ( state.quizzes[ id ] ) {
 				return;
 			}
-			const saved = loadSaved( id );
+			const saved = loadSaved( id, ctx.rev );
 			state.quizzes[ id ] = {
+				rev: ctx.rev,
 				answered: saved ? saved.answered || 0 : 0,
 				correct: saved ? saved.correct || 0 : 0,
 				total: ctx.total || 0,
@@ -375,7 +387,7 @@ const { state } = store( NS, {
 			if ( state.questions[ qid ] ) {
 				return;
 			}
-			const savedData = loadSaved( ctx.contextId );
+			const savedData = loadSaved( ctx.contextId, ctx.rev );
 			const savedQuestions = savedData && savedData.questions ? savedData.questions : {};
 			const saved = savedQuestions[ qid ];
 			state.questions[ qid ] = saved

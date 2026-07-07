@@ -32,6 +32,7 @@ $d9qp_context = array(
 	'refId'     => $d9qp_ref_id,
 	'contextId' => $d9qp_context_id,
 	'total'     => count( $d9qp_questions ),
+	'rev'       => (int) get_post_meta( $d9qp_ref_id, \D9QP\Counters::KEY_REV, true ),
 );
 
 $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-quiz' ) );
