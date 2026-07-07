@@ -9,8 +9,14 @@
  * @package D9QP
  */
 
+// Prevent direct access.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+// Only run when WordPress is actually uninstalling the plugin.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	die;
+	exit;
 }
 
 if ( ! defined( 'D9QP_DELETE_DATA_ON_UNINSTALL' ) || ! D9QP_DELETE_DATA_ON_UNINSTALL ) {
