@@ -162,12 +162,49 @@ const { state } = store( NS, {
 			const q = state.quizzes[ getContext().contextId ];
 			return !! ( q && q.completed );
 		},
-		get quizScoreText() {
+		get quizScorePercent() {
 			const q = state.quizzes[ getContext().contextId ];
-			if ( ! q ) {
-				return '';
+			if ( ! q || ! q.total ) {
+				return 0;
 			}
-			return `${ getConfig( NS ).i18n.scored } ${ q.correct } / ${ q.total }`;
+			return Math.round( ( q.correct / q.total ) * 100 );
+		},
+		get quizScorePercentLabel() {
+			return `${ state.quizScorePercent }%`;
+		},
+		get quizScoreFraction() {
+			const q = state.quizzes[ getContext().contextId ];
+			return q ? `${ q.correct } / ${ q.total }` : '';
+		},
+		get quizScoreLabel() {
+			return getConfig( NS ).i18n.scoreLabel;
+		},
+		get quizScoreColor() {
+			const p = state.quizScorePercent;
+			if ( p >= 60 ) {
+				return '#16a34a';
+			}
+			if ( p >= 30 ) {
+				return '#f59e0b';
+			}
+			return '#dc2626';
+		},
+		get quizRingStyle() {
+			return `conic-gradient(${ state.quizScoreColor } ${ state.quizScorePercent }%, rgba(0,0,0,0.1) 0)`;
+		},
+		get quizScoreHeadline() {
+			const p = state.quizScorePercent;
+			const i18n = getConfig( NS ).i18n;
+			if ( p >= 100 ) {
+				return i18n.resultPerfect;
+			}
+			if ( p >= 60 ) {
+				return i18n.resultGreat;
+			}
+			if ( p >= 30 ) {
+				return i18n.resultGood;
+			}
+			return i18n.resultTry;
 		},
 	},
 

@@ -101,6 +101,15 @@ $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-quiz'
 	<?php endforeach; ?>
 
 	<div class="d9qp-quiz-result" role="status" data-wp-bind--hidden="!state.quizCompleted">
-		<p class="d9qp-score" data-wp-text="state.quizScoreText"></p>
+		<div class="d9qp-result-ring" data-wp-style--background="state.quizRingStyle">
+			<span class="d9qp-result-ring-inner" data-wp-text="state.quizScorePercentLabel"></span>
+		</div>
+		<div class="d9qp-result-text">
+			<p class="d9qp-result-headline" data-wp-text="state.quizScoreHeadline"></p>
+			<p class="d9qp-result-sub">
+				<span class="d9qp-result-fraction" data-wp-text="state.quizScoreFraction"></span>
+				<span data-wp-text="state.quizScoreLabel"></span>
+			</p>
+		</div>
 	</div>
 </div>

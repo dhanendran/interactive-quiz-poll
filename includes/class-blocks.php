@@ -118,12 +118,16 @@ class Blocks {
 		$config = array(
 			'restUrl' => esc_url_raw( rest_url( Rest_Controller::NAMESPACE ) ),
 			'i18n'    => array(
-				'votes'     => __( 'votes', 'interactive-quiz-poll' ),
-				'vote'      => __( 'vote', 'interactive-quiz-poll' ),
-				'correct'   => __( 'Correct!', 'interactive-quiz-poll' ),
-				'incorrect' => __( 'Not quite.', 'interactive-quiz-poll' ),
-				'error'     => __( 'Something went wrong. Please try again.', 'interactive-quiz-poll' ),
-				'scored'    => __( 'You scored', 'interactive-quiz-poll' ),
+				'votes'         => __( 'votes', 'interactive-quiz-poll' ),
+				'vote'          => __( 'vote', 'interactive-quiz-poll' ),
+				'correct'       => __( 'Correct!', 'interactive-quiz-poll' ),
+				'incorrect'     => __( 'Not quite.', 'interactive-quiz-poll' ),
+				'error'         => __( 'Something went wrong. Please try again.', 'interactive-quiz-poll' ),
+				'scoreLabel'    => __( 'correct', 'interactive-quiz-poll' ),
+				'resultPerfect' => __( 'Perfect score!', 'interactive-quiz-poll' ),
+				'resultGreat'   => __( 'Great job!', 'interactive-quiz-poll' ),
+				'resultGood'    => __( 'Good effort!', 'interactive-quiz-poll' ),
+				'resultTry'     => __( 'Keep practising!', 'interactive-quiz-poll' ),
 			),
 		);
 
