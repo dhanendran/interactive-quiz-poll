@@ -2,6 +2,12 @@
 	--d9qp-correct: #16a34a;
 	--d9qp-wrong: #dc2626;
 
+	// Elements with an explicit `display` ignore the `hidden` attribute unless
+	// we say otherwise — needed for the data-wp-bind--hidden toggles below.
+	[hidden] {
+		display: none !important;
+	}
+
 	.d9qp-question {
 		margin-bottom: 1.5em;
 		padding-bottom: 1.5em;

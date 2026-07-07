@@ -1,6 +1,12 @@
 .wp-block-interactive-quiz-poll-poll {
 	--d9qp-accent: #3b82f6;
 
+	// Elements with an explicit `display` ignore the `hidden` attribute unless
+	// we say otherwise — needed for the data-wp-bind--hidden toggles below.
+	[hidden] {
+		display: none !important;
+	}
+
 	.d9qp-fieldset {
 		border: 0;
 		margin: 0;
