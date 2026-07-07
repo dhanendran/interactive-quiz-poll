@@ -82,8 +82,14 @@ $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-quiz'
 								data-wp-bind--disabled="state.quizAnswered"
 							>
 								<span class="d9qp-option-text"><?php echo wp_kses_post( $d9qp_text ); ?></span>
-								<span class="d9qp-chosen-badge" data-wp-bind--hidden="!state.optionIsChosen">
-									<?php esc_html_e( 'Your answer', 'interactive-quiz-poll' ); ?>
+								<span class="d9qp-option-meta">
+									<span class="d9qp-your" data-wp-bind--hidden="!state.optionIsChosen"><?php esc_html_e( 'Your answer', 'interactive-quiz-poll' ); ?></span>
+									<span class="d9qp-icon d9qp-icon-correct" aria-hidden="true" data-wp-bind--hidden="!state.optionIsCorrect">
+										<svg viewBox="0 0 20 20" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"/></svg>
+									</span>
+									<span class="d9qp-icon d9qp-icon-wrong" aria-hidden="true" data-wp-bind--hidden="!state.optionIsWrongChosen">
+										<svg viewBox="0 0 20 20" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+									</span>
 								</span>
 							</button>
 						</li>
