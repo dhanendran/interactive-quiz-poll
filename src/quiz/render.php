@@ -101,8 +101,22 @@ $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-quiz'
 	<?php endforeach; ?>
 
 	<div class="d9qp-quiz-result" role="status" data-wp-bind--hidden="!state.quizCompleted">
-		<div class="d9qp-result-ring" data-wp-style--background="state.quizRingStyle">
-			<span class="d9qp-result-ring-inner" data-wp-text="state.quizScorePercentLabel"></span>
+		<div class="d9qp-result-ring">
+			<svg viewBox="0 0 72 72" width="72" height="72" aria-hidden="true">
+				<circle class="d9qp-ring-track" cx="36" cy="36" r="30" fill="none" stroke-width="8"></circle>
+				<circle
+					class="d9qp-ring-arc"
+					cx="36" cy="36" r="30"
+					fill="none"
+					stroke-width="8"
+					stroke-linecap="round"
+					stroke-dasharray="188.5"
+					transform="rotate(-90 36 36)"
+					data-wp-bind--stroke="state.quizScoreColor"
+					data-wp-bind--stroke-dashoffset="state.quizRingDashoffset"
+				></circle>
+			</svg>
+			<span class="d9qp-ring-label" data-wp-text="state.quizScorePercentLabel"></span>
 		</div>
 		<div class="d9qp-result-text">
 			<p class="d9qp-result-headline" data-wp-text="state.quizScoreHeadline"></p>
@@ -111,5 +125,11 @@ $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-quiz'
 				<span data-wp-text="state.quizScoreLabel"></span>
 			</p>
 		</div>
+		<?php if ( ! empty( $attributes['allowRetake'] ) ) : ?>
+			<button type="button" class="d9qp-retake" data-wp-on--click="actions.retakeQuiz">
+				<svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 8A7 7 0 1 0 17 12"/><path d="M17 3v5h-5"/></svg>
+				<?php esc_html_e( 'Retake', 'interactive-quiz-poll' ); ?>
+			</button>
+		<?php endif; ?>
 	</div>
 </div>

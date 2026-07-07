@@ -148,30 +148,54 @@
 
 	.d9qp-result-ring {
 		flex: none;
-		width: 88px;
-		height: 88px;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		// `background` (the conic-gradient) is set inline per score.
+		position: relative;
+		width: 72px;
+		height: 72px;
 	}
 
-	.d9qp-result-ring-inner {
-		width: 66px;
-		height: 66px;
-		border-radius: 50%;
-		background: #fff;
+	.d9qp-ring-track {
+		stroke: rgba( 128, 128, 128, 0.22 );
+	}
+
+	.d9qp-ring-arc {
+		transition: stroke-dashoffset 0.5s ease;
+	}
+
+	.d9qp-ring-label {
+		position: absolute;
+		inset: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		font-weight: 700;
-		font-size: 1.1em;
 		font-variant-numeric: tabular-nums;
 	}
 
 	.d9qp-result-text {
 		min-width: 0;
+	}
+
+	.d9qp-retake {
+		margin-left: auto;
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		padding: 0.5em 0.9em;
+		border: 1px solid currentColor;
+		border-radius: 999px;
+		background: transparent;
+		color: inherit;
+		font: inherit;
+		font-size: 0.9em;
+		cursor: pointer;
+		opacity: 0.85;
+		transition: opacity 0.15s ease, background-color 0.15s ease;
+
+		&:hover {
+			opacity: 1;
+			background: rgba( 128, 128, 128, 0.1 );
+		}
 	}
 
 	.d9qp-result-headline {

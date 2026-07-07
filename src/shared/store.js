@@ -189,8 +189,10 @@ const { state } = store( NS, {
 			}
 			return '#dc2626';
 		},
-		get quizRingStyle() {
-			return `conic-gradient(${ state.quizScoreColor } ${ state.quizScorePercent }%, rgba(0,0,0,0.1) 0)`;
+		get quizRingDashoffset() {
+			// Circumference of the r=30 ring (2·π·30 ≈ 188.5).
+			const circumference = 188.5;
+			return circumference * ( 1 - state.quizScorePercent / 100 );
 		},
 		get quizScoreHeadline() {
 			const p = state.quizScorePercent;
@@ -291,6 +293,33 @@ const { state } = store( NS, {
 			} finally {
 				q.loading = false;
 			}
+		},
+
+		retakeQuiz() {
+			const ctx = getContext();
+			const cid = ctx.contextId;
+			const quiz = state.quizzes[ cid ];
+			if ( ! quiz ) {
+				return;
+			}
+			( contextQuestions[ cid ] || [] ).forEach( ( qid ) => {
+				state.questions[ qid ] = {
+					answered: false,
+					loading: false,
+					chosenId: null,
+					correctAnswerId: null,
+					isCorrect: false,
+					detailsHtml: '',
+				};
+			} );
+			quiz.answered = 0;
+			quiz.correct = 0;
+			quiz.completed = false;
+			quiz.token = '';
+			savedCache[ cid ] = null;
+			try {
+				window.localStorage.removeItem( `d9qp_quiz_${ cid }` );
+			} catch ( e ) {}
 		},
 	},
 

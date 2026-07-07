@@ -13,6 +13,10 @@
 		"mode": {
 			"type": "string",
 			"default": "quiz"
+		},
+		"allowRetake": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"providesContext": {
