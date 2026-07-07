@@ -73,6 +73,9 @@ $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-poll'
 					data-wp-context="<?php echo esc_attr( wp_json_encode( $d9qp_opt ) ); ?>"
 					data-wp-class--is-selected="state.optionIsSelected"
 				>
+					<span class="d9qp-bar" aria-hidden="true" data-wp-bind--hidden="!state.pollVoted">
+						<span class="d9qp-bar-fill" data-wp-style--width="state.optionWidth"></span>
+					</span>
 					<button
 						type="button"
 						class="d9qp-option-btn"
@@ -80,11 +83,16 @@ $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-poll'
 						data-wp-bind--disabled="state.pollVoted"
 					>
 						<span class="d9qp-option-text"><?php echo wp_kses_post( $d9qp_text ); ?></span>
+						<span class="d9qp-option-meta">
+							<span class="d9qp-selected-tag" data-wp-bind--hidden="!state.optionIsSelected">
+								<span class="d9qp-icon d9qp-icon-selected" aria-hidden="true">
+									<svg viewBox="0 0 20 20" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"/></svg>
+								</span>
+								<?php esc_html_e( 'Your answer', 'interactive-quiz-poll' ); ?>
+							</span>
+							<span class="d9qp-pct" data-wp-bind--hidden="!state.pollVoted" data-wp-text="state.optionPercentLabel"></span>
+						</span>
 					</button>
-					<span class="d9qp-bar" aria-hidden="true" data-wp-bind--hidden="!state.pollVoted">
-						<span class="d9qp-bar-fill" data-wp-style--width="state.optionWidth"></span>
-					</span>
-					<span class="d9qp-pct" data-wp-bind--hidden="!state.pollVoted" data-wp-text="state.optionPercentLabel"></span>
 				</li>
 			<?php endforeach; ?>
 		</ul>

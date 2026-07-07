@@ -33,34 +33,7 @@
 		position: relative;
 	}
 
-	.d9qp-option-btn {
-		display: block;
-		width: 100%;
-		text-align: left;
-		padding: 0.7em 1em;
-		border: 1px solid currentColor;
-		border-radius: 8px;
-		background: transparent;
-		cursor: pointer;
-		font: inherit;
-		position: relative;
-		z-index: 1;
-		transition: background-color 0.15s ease;
-
-		&:hover:not( [disabled] ) {
-			background: rgba( 59, 130, 246, 0.08 );
-		}
-
-		&[disabled] {
-			cursor: default;
-		}
-	}
-
-	.d9qp-option.is-selected .d9qp-option-btn {
-		border-color: var( --d9qp-accent );
-		font-weight: 600;
-	}
-
+	// Result bar sits behind the (transparent) button.
 	.d9qp-bar {
 		display: block;
 		position: absolute;
@@ -68,6 +41,7 @@
 		border-radius: 8px;
 		overflow: hidden;
 		z-index: 0;
+		pointer-events: none;
 	}
 
 	.d9qp-bar-fill {
@@ -78,12 +52,74 @@
 		transition: width 0.4s ease;
 	}
 
-	.d9qp-pct {
-		position: absolute;
-		right: 1em;
-		top: 50%;
-		transform: translateY( -50% );
+	.d9qp-option-btn {
+		position: relative;
 		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75em;
+		width: 100%;
+		text-align: left;
+		padding: 0.7em 1em;
+		border: 1px solid currentColor;
+		border-radius: 8px;
+		background: transparent;
+		cursor: pointer;
+		font: inherit;
+		transition: background-color 0.15s ease, border-color 0.15s ease;
+
+		&:hover:not( [disabled] ) {
+			background: rgba( 59, 130, 246, 0.06 );
+		}
+
+		// Keep results legible — don't grey out like a disabled control.
+		&[disabled] {
+			cursor: default;
+			color: inherit;
+			opacity: 1;
+			-webkit-text-fill-color: currentColor;
+		}
+	}
+
+	.d9qp-option.is-selected .d9qp-option-btn {
+		border-color: var( --d9qp-accent );
+		font-weight: 600;
+	}
+
+	.d9qp-option-meta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.7em;
+		flex: none;
+	}
+
+	.d9qp-selected-tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35em;
+		color: var( --d9qp-accent );
+		font-size: 0.78em;
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.d9qp-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.3em;
+		height: 1.3em;
+		border-radius: 50%;
+		color: #fff;
+		flex: none;
+	}
+
+	.d9qp-icon-selected {
+		background: var( --d9qp-accent );
+	}
+
+	.d9qp-pct {
 		font-variant-numeric: tabular-nums;
 		font-weight: 600;
 	}
