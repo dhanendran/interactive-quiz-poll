@@ -73,6 +73,7 @@ $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-quiz'
 							data-wp-context="<?php echo esc_attr( wp_json_encode( $d9qp_opt ) ); ?>"
 							data-wp-class--is-correct="state.optionIsCorrect"
 							data-wp-class--is-wrong="state.optionIsWrongChosen"
+							data-wp-class--is-chosen="state.optionIsChosen"
 						>
 							<button
 								type="button"
@@ -81,6 +82,9 @@ $d9qp_wrapper = get_block_wrapper_attributes( array( 'class' => 'd9qp d9qp-quiz'
 								data-wp-bind--disabled="state.quizAnswered"
 							>
 								<span class="d9qp-option-text"><?php echo wp_kses_post( $d9qp_text ); ?></span>
+								<span class="d9qp-chosen-badge" data-wp-bind--hidden="!state.optionIsChosen">
+									<?php esc_html_e( 'Your answer', 'interactive-quiz-poll' ); ?>
+								</span>
 							</button>
 						</li>
 					<?php endforeach; ?>

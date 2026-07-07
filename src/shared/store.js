@@ -149,6 +149,11 @@ const { state } = store( NS, {
 			const q = state.questions[ ctx.questionId ];
 			return !! ( q && q.answered && q.chosenId === ctx.answerId && q.correctAnswerId !== ctx.answerId );
 		},
+		get optionIsChosen() {
+			const ctx = getContext();
+			const q = state.questions[ ctx.questionId ];
+			return !! ( q && q.answered && q.chosenId === ctx.answerId );
+		},
 		get quizHasDetails() {
 			const q = state.questions[ getContext().questionId ];
 			return !! ( q && q.answered && q.detailsHtml );
