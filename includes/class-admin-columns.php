@@ -108,7 +108,10 @@ class Admin_Columns {
 		check_admin_referer( 'd9qp_reset_' . $post_id );
 
 		global $wpdb;
-		// Remove every counter meta row for this post in one query.
+		// Remove every counter meta row for this post in one query. A direct
+		// query keyed by a LIKE prefix is the only way to bulk-delete these;
+		// the object cache is busted immediately after.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE %s",

@@ -60,7 +60,11 @@ class Results_Page {
 		global $wpdb;
 
 		$prefix = '_d9qp_v_';
-		$rows   = $wpdb->get_results(
+		// Admin-only report: read every per-post counter for this quiz/poll by
+		// key prefix. A direct query is needed (the meta API can't match by a
+		// LIKE prefix); results are only shown on the reporting screen.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE %s",
 				$post_id,
@@ -341,16 +345,10 @@ class Results_Page {
 
 		$filename = sanitize_title( get_the_title( $post_id ) ) . '-results.csv';
 
-		nocache_headers();
-		header( 'Content-Type: text/csv; charset=utf-8' );
-		header( 'Content-Disposition: attachment; filename=' . $filename );
-
-		$fh = fopen( 'php://output', 'w' );
-		fputcsv( $fh, array( 'Post ID', 'Post', 'Question', 'Answer', 'Correct', 'Responses' ) );
-
+		$lines   = array();
+		$lines[] = $this->csv_row( array( 'Post ID', 'Post', 'Question', 'Answer', 'Correct', 'Responses' ) );
 		foreach ( $rows as $r ) {
-			fputcsv(
-				$fh,
+			$lines[] = $this->csv_row(
 				array(
 					$r['ctx'],
 					$this->context_label( $r['ctx'], $post_id ),
@@ -362,7 +360,31 @@ class Results_Page {
 			);
 		}
 
-		fclose( $fh );
+		nocache_headers();
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename=' . $filename );
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSV file download, fields escaped by csv_row().
+		echo implode( "\r\n", $lines ) . "\r\n";
 		exit;
+	}
+
+	/**
+	 * Build a single CSV line with quoted, injection-safe fields.
+	 *
+	 * @param array $fields Field values.
+	 * @return string
+	 */
+	private function csv_row( array $fields ) {
+		$escaped = array();
+		foreach ( $fields as $value ) {
+			$value = (string) $value;
+			// Neutralise spreadsheet formula injection.
+			if ( '' !== $value && in_array( $value[0], array( '=', '+', '-', '@' ), true ) ) {
+				$value = "'" . $value;
+			}
+			$escaped[] = '"' . str_replace( '"', '""', $value ) . '"';
+		}
+		return implode( ',', $escaped );
 	}
 }

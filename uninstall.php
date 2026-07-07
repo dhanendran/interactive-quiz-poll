@@ -22,11 +22,10 @@ $d9qp_types = array( 'd9qp_quiz', 'd9qp_poll' );
 foreach ( $d9qp_types as $d9qp_type ) {
 	$d9qp_posts = get_posts(
 		array(
-			'post_type'      => $d9qp_type,
-			'post_status'    => 'any',
-			'numberposts'    => -1,
-			'fields'         => 'ids',
-			'suppress_filters' => true,
+			'post_type'   => $d9qp_type,
+			'post_status' => 'any',
+			'numberposts' => -1,
+			'fields'      => 'ids',
 		)
 	);
 	foreach ( $d9qp_posts as $d9qp_post_id ) {

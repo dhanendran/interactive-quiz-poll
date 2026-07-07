@@ -51,7 +51,10 @@ class Counters {
 	public static function increment( $post_id, $meta_key ) {
 		global $wpdb;
 
-		// Single-statement increment — race-safe, no lost updates.
+		// Single-statement increment — race-safe, no lost updates. A direct
+		// query is required: the meta API can't do an atomic read-add-write,
+		// and the object cache is busted below.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$updated = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$wpdb->postmeta} SET meta_value = CAST(meta_value AS UNSIGNED) + 1 WHERE post_id = %d AND meta_key = %s",
@@ -65,6 +68,7 @@ class Counters {
 			// that created it in the gap makes this fail, and we fall through.
 			$added = add_post_meta( $post_id, $meta_key, 1, true );
 			if ( false === $added ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				$wpdb->query(
 					$wpdb->prepare(
 						"UPDATE {$wpdb->postmeta} SET meta_value = CAST(meta_value AS UNSIGNED) + 1 WHERE post_id = %d AND meta_key = %s",

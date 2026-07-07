@@ -53,7 +53,11 @@ class Results {
 		global $wpdb;
 
 		$prefix = '_d9qp_v_';
-		$rows   = $wpdb->get_results(
+		// Admin-only report: read every per-post counter for this quiz/poll by
+		// key prefix. A direct query is needed (the meta API can't match by a
+		// LIKE prefix); results are only shown on the editor screen.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key LIKE %s",
 				$post_id,
