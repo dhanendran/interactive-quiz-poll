@@ -45,6 +45,7 @@ class Plugin {
 
 		if ( is_admin() ) {
 			( new Admin_Columns() )->init();
+			( new Results() )->init();
 		}
 	}
 }

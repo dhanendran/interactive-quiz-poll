@@ -34,6 +34,7 @@ require_once D9QP_DIR . 'includes/class-post-types.php';
 require_once D9QP_DIR . 'includes/class-blocks.php';
 require_once D9QP_DIR . 'includes/class-rest-controller.php';
 require_once D9QP_DIR . 'includes/class-admin-columns.php';
+require_once D9QP_DIR . 'includes/class-results.php';
 require_once D9QP_DIR . 'includes/class-plugin.php';
 
 /**
